@@ -1,4 +1,7 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer } from 'react';
+import Header from './components/Header';
+import AddToDoForm from './components/AddToDoForm';
+import ToDoList from './components/ToDoList';
 import './App.css';
 
 const appReducer = (state, action) => {
@@ -21,66 +24,25 @@ const appReducer = (state, action) => {
 			return state;
 	}
 };
+export const TodosDispatch = React.createContext(null);
 
 const App = () => {
-	const [ textField, setTextField ] = useState('');
-	const [ state, dispatch ] = useReducer(appReducer, [
+	const initialState = [
 		{
 			text: 'Eat Dinner',
 			completed: false
 		}
-	]);
+	];
 
-	const handleAddToDo = (e) => {
-		e.preventDefault();
-		if (textField.length > 0) {
-			dispatch({ type: 'ADD_TODO', payload: textField });
-			setTextField('');
-		}
-	};
-
-	const handleDelete = (index) => {
-		dispatch({ type: 'REMOVE_TODO', payload: index });
-	};
-
-	const handleToggleCompleted = (index) => {
-		dispatch({ type: 'TOGGLE_COMPLETED', payload: index });
-	};
+	const [ state, dispatch ] = useReducer(appReducer, initialState);
 
 	return (
 		<div className="App">
-			<h1>To Do App with React Hooks & Context</h1>
-			<hr style={{ width: '75%' }} />
-			<br />
-			<form onSubmit={handleAddToDo}>
-				<input autoFocus type="text" value={textField} onChange={(e) => setTextField(e.target.value)} />
-				<button
-					style={{
-						margin: '10px'
-					}}
-					onClick={handleAddToDo}
-				>
-					Add
-				</button>
-			</form>
-			<br />
-			{state.map((item, index) => {
-				return (
-					<div key={index} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-						<input type="checkbox" onChange={() => handleToggleCompleted(index)} checked={false} />
-						<p
-							style={{
-								paddingLeft: '10px',
-								paddingRight: '10px',
-								textDecoration: item.completed ? 'line-through' : 'none'
-							}}
-						>
-							{item.text}
-						</p>
-						<button onClick={() => handleDelete(index)}>Delete</button>
-					</div>
-				);
-			})}
+			<TodosDispatch.Provider value={dispatch}>
+				<Header />
+				<AddToDoForm />
+				<ToDoList todos={state} />
+			</TodosDispatch.Provider>
 		</div>
 	);
 };
