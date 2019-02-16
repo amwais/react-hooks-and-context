@@ -54,7 +54,14 @@ const App = () => {
 			<br />
 			<form onSubmit={handleAddToDo}>
 				<input autoFocus type="text" value={textField} onChange={(e) => setTextField(e.target.value)} />
-				<button onClick={handleAddToDo}>Add</button>
+				<button
+					style={{
+						margin: '10px'
+					}}
+					onClick={handleAddToDo}
+				>
+					Add
+				</button>
 			</form>
 			<br />
 			{state.map((item, index) => {
