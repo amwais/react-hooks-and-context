@@ -2,46 +2,41 @@ import React, { useReducer } from 'react';
 import Header from './components/Header';
 import AddToDoForm from './components/AddToDoForm';
 import ToDoList from './components/ToDoList';
+import ErrorButtons from './components/ErrorButtons';
+import todoReducer from './reducers/todoReducer';
+import errorReducer from './reducers/errorReducer';
 import './App.css';
 
-const appReducer = (state, action) => {
-	switch (action.type) {
-		case 'ADD_TODO':
-			return [ ...state, { text: action.payload } ];
-		case 'REMOVE_TODO':
-			return state.filter((_, index) => index !== action.payload);
-		case 'TOGGLE_COMPLETED':
-			return state.map((item, index) => {
-				if (action.payload === index) {
-					return {
-						...item,
-						completed: !item.completed
-					};
-				}
-				return item;
-			});
-		default:
-			return state;
-	}
-};
 export const TodosDispatch = React.createContext(null);
+export const ErrorsContext = React.createContext(null);
 
 const App = () => {
-	const initialState = [
+	const initialTodos = [
 		{
 			text: 'Eat Dinner',
 			completed: false
 		}
 	];
 
-	const [ state, dispatch ] = useReducer(appReducer, initialState);
+	const initialErrors = {
+		header: '',
+		form: ''
+	};
+
+	const [ todos, todosDispatch ] = useReducer(todoReducer, initialTodos);
+	const [ errors, errorDispatch ] = useReducer(errorReducer, initialErrors);
 
 	return (
 		<div className="App">
-			<TodosDispatch.Provider value={dispatch}>
-				<Header />
-				<AddToDoForm />
-				<ToDoList todos={state} />
+			<TodosDispatch.Provider value={todosDispatch}>
+				<ErrorsContext.Provider value={[ errors, errorDispatch ]}>
+					<Header />
+					<AddToDoForm />
+				</ErrorsContext.Provider>
+				<ToDoList todos={todos} />
+				<ErrorsContext.Provider value={errorDispatch}>
+					<ErrorButtons />
+				</ErrorsContext.Provider>
 			</TodosDispatch.Provider>
 		</div>
 	);
