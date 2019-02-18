@@ -1,4 +1,5 @@
 import React, { useReducer } from 'react';
+import { initialTodos, initialErrors } from './initialStates';
 import Header from './components/Header';
 import AddToDoForm from './components/AddToDoForm';
 import ToDoList from './components/ToDoList';
@@ -11,18 +12,6 @@ export const TodosDispatch = React.createContext(null);
 export const ErrorsContext = React.createContext(null);
 
 const App = () => {
-	const initialTodos = [
-		{
-			text: 'Eat Dinner',
-			completed: false
-		}
-	];
-
-	const initialErrors = {
-		header: '',
-		form: ''
-	};
-
 	const [ todos, todosDispatch ] = useReducer(todoReducer, initialTodos);
 	const [ errors, errorDispatch ] = useReducer(errorReducer, initialErrors);
 
