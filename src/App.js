@@ -1,28 +1,34 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, { useReducer } from 'react';
+import { initialTodos, initialErrors } from './initialStates';
+import Header from './components/Header';
+import AddToDoForm from './components/AddToDoForm';
+import ToDoList from './components/ToDoList';
+import ErrorButtons from './components/ErrorButtons';
+import todoReducer from './reducers/todoReducer';
+import errorReducer from './reducers/errorReducer';
 import './App.css';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
+export const TodosDispatch = React.createContext(null);
+export const ErrorsContext = React.createContext(null);
+
+const App = () => {
+	const [ todos, todosDispatch ] = useReducer(todoReducer, initialTodos);
+	const [ errors, errorDispatch ] = useReducer(errorReducer, initialErrors);
+
+	return (
+		<div className="App">
+			<TodosDispatch.Provider value={todosDispatch}>
+				<ErrorsContext.Provider value={[ errors, errorDispatch ]}>
+					<Header />
+					<AddToDoForm />
+				</ErrorsContext.Provider>
+				<ToDoList todos={todos} />
+				<ErrorsContext.Provider value={errorDispatch}>
+					<ErrorButtons />
+				</ErrorsContext.Provider>
+			</TodosDispatch.Provider>
+		</div>
+	);
+};
 
 export default App;
